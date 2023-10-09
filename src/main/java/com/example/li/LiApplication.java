@@ -7,13 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LiApplication {
     public static void main(String[] args) {
 
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MoldincombankUI moldincombankUI = new MoldincombankUI();
-            }
-        });
-
         SpringApplication.run(LiApplication.class, args);
 
     }
