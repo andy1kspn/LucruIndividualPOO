@@ -1,7 +1,7 @@
-package com.example.li.repository;
+package com.backend.li.repository;
 
 
-import com.example.li.model.UserEntity;
+import com.backend.li.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

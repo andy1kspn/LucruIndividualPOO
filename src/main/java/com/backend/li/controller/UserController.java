@@ -1,13 +1,11 @@
-package com.example.li.controller;
+package com.backend.li.controller;
 
-import com.example.li.DTO.UserDTO;
-import com.example.li.model.UserEntity;
-import com.example.li.service.UserService;
+import com.backend.li.DTO.UserDTO;
+import com.backend.li.model.UserEntity;
+import com.backend.li.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController

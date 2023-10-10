@@ -1,4 +1,4 @@
-package com.example.li.model;
+package com.backend.li.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

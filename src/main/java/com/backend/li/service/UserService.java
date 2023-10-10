@@ -1,8 +1,8 @@
-package com.example.li.service;
+package com.backend.li.service;
 
-import com.example.li.model.UserEntity;
-import com.example.li.repository.UserRepository;
-import com.example.li.DTO.UserDTO;
+import com.backend.li.model.UserEntity;
+import com.backend.li.repository.UserRepository;
+import com.backend.li.DTO.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class UserService {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            return new UserDTO(user.getId(), user.getNume());
+            return new UserDTO(user.getId(), user.getNume(),user.getPin(),user.getBalance());
         } else {
             throw new NoSuchElementException("User not found with ID: " + id);
         }
