@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
 
@@ -22,7 +22,7 @@ public class UserController {
 
 
 
-    @PutMapping("/put/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUser(@PathVariable Long id, @RequestBody UserEntity updatedUser) {
         UserEntity user = UserService.updateUser(id, updatedUser);
         if (user != null) {
@@ -32,19 +32,19 @@ public class UserController {
         }
     }
 
-    @PostMapping("/post")
+    @PostMapping
     public void registerNewUser(@RequestBody UserEntity user){
         UserService.addNewUser(user);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable Long id){
         UserService.deleteUserById(id);
     }
 
 
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO user = UserService.getUserById(id);
         if (user != null) {

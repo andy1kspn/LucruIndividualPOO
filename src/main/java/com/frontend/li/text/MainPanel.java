@@ -28,6 +28,10 @@ public class MainPanel extends Methods{
 
 
 
+//ButonTest
+      // JPanel button = createPanelWithButton("apasa-ma",250,50,50,50);
+     //   frame.add(button);
+
 
 
         frame.setVisible(true);

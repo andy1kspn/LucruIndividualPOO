@@ -11,14 +11,14 @@ import javax.swing.*;
 public class LiApplication {
     public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(new Runnable() {
+       /* SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new MainPanel();
             }
-        });
+        });*/
 
-        //SpringApplication.run(LiApplication.class, args);
+        SpringApplication.run(LiApplication.class, args);
 
     }
 }
