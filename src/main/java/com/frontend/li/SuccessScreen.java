@@ -1,10 +1,10 @@
-package com.example.li;
+package com.frontend.li;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SuccessScreen {
-    public static void showSuccessPanel(MoldincombankUI moldincombankUI) {
+    public static void showSuccessPanel(Moldindconbank moldincombankUI) {
         JFrame successFrame = new JFrame("Success!");
         successFrame.setSize(300, 150);
         successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

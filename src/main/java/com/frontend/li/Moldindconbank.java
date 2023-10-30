@@ -1,11 +1,16 @@
-package com.example.li;
+package com.frontend.li;
 
 
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
+import java.net.URL;
 class BackgroundPanel extends JPanel {
     private Color backgroundColor;
 
@@ -19,11 +24,14 @@ class BackgroundPanel extends JPanel {
     }
 }
 
-public class MoldincombankUI extends JFrame {
+public class Moldindconbank extends JFrame {
     private JPanel rectanglePanel;
     private JPanel interactionPanel;
 
-    public MoldincombankUI() {
+    private Login loginPanel;
+    private Register registerPanel;
+
+    public Moldindconbank() {
         setTitle("Aplicatie dezvoltata de Spînu Andrei IA2201");
         setSize(400, 600);
         setResizable(false);
@@ -47,6 +55,10 @@ public class MoldincombankUI extends JFrame {
 
         JPanel eastPanel = new JPanel(new BorderLayout());
         eastPanel.add(rectanglePanel, BorderLayout.CENTER);
+
+        loginPanel = new Login(this);
+        registerPanel = new Register();
+
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(numpadPanel, BorderLayout.WEST);
@@ -74,13 +86,23 @@ public class MoldincombankUI extends JFrame {
                     interactionPanel.removeAll();
                     interactionPanel.setLayout(null);  // Set layout to null
 
-                    // Display success label
-                    JLabel successLabel = new JLabel("Success");
-                    successLabel.setFont(new Font("Arial", Font.BOLD, 24));
-                    successLabel.setForeground(Color.GREEN);
-                    successLabel.setBounds(50, 50, 200, 50);  // Set position and size
-                    interactionPanel.add(successLabel);
-                    successLabel.setVisible(true);
+                    // Send a GET request and check if id 1 is present
+                    // For simplicity, assuming a boolean response
+                    boolean isId1Present = checkIfId1IsPresent();
+
+                    JLabel resultLabel = new JLabel();
+                    resultLabel.setFont(new Font("Arial", Font.BOLD, 24));
+                    resultLabel.setBounds(50, 50, 200, 50);  // Set position and size
+
+                    if (isId1Present) {
+                        switchToLoginPanel();
+
+                    } else {
+                        //Register thing
+                    }
+
+                    interactionPanel.add(resultLabel);
+                    resultLabel.setVisible(true);
 
                     // Repaint the panel
                     interactionPanel.repaint();
@@ -92,6 +114,8 @@ public class MoldincombankUI extends JFrame {
                 // Not used
             }
         });
+
+
     }
 
     private JPanel createInteractionPanel() {
@@ -155,5 +179,99 @@ public class MoldincombankUI extends JFrame {
         }
 
         return numpadPanel;
+    }
+
+
+    private boolean checkIfId1IsPresent() {
+        try {
+            // Replace this URL with your actual API endpoint
+            String apiUrl = "http://localhost:8080/users/get/1";  // Assuming /users/1 represents checking for id 1
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Attempt to parse the response as JSON
+                try {
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+
+                    // Assuming the response has an "id" field
+                    if (jsonResponse.has("id")) {
+                        int id = jsonResponse.getInt("id");
+                        return id == 1;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Handle HTTP error response
+                System.out.println("GET request failed: HTTP error code - " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean checkIfPinIsCorrect(String enteredPin) {
+        try {
+            String apiUrl = "http://localhost:8080/users/get/1";
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Attempt to parse the response as JSON
+                try {
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+
+                    // Assuming the response has a "pin" field
+                    if (jsonResponse.has("pin")) {
+                        String correctPin = jsonResponse.getString("pin");
+                        return enteredPin.equals(correctPin);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("GET request failed: HTTP error code - " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public JPanel getInteractionPanel() {
+        return interactionPanel;
+    }
+
+
+    public void switchToLoginPanel() {
+        loginPanel.setVisible(true);
     }
 }

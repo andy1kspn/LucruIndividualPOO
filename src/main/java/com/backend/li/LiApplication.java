@@ -1,18 +1,22 @@
-package com.example.li;
+package com.backend.li;
 
+import com.frontend.li.text.MainPanel;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.frontend.li.Moldindconbank;
+
+import javax.swing.*;
 
 @SpringBootApplication
 public class LiApplication {
     public static void main(String[] args) {
 
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+       /* SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                MoldincombankUI moldincombankUI = new MoldincombankUI();
+                new MainPanel();
             }
-        });
+        });*/
 
         SpringApplication.run(LiApplication.class, args);
 
