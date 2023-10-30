@@ -35,7 +35,7 @@ public class UserService {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            return new UserDTO(user.getId(), user.getNume(),user.getPin(),user.getBalance());
+            return new UserDTO(user.getId(), user.getNume(),user.getPin(),user.getBalance(), user.getNr_card());
         } else {
             throw new NoSuchElementException("User not found with ID: " + id);
         }
@@ -61,10 +61,9 @@ public class UserService {
 
 
 
+
     public void addNewUser(UserEntity user) {
         userRepository.save(user);
     }
-    public void updateBalance(Long id_utilizator, BigDecimal suma, String tip) {
 
-    }
 }

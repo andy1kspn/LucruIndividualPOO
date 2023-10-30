@@ -1,10 +1,13 @@
 package com.backend.li.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,7 +31,11 @@ public class UserEntity {
     private String pin;
 
     @Column(name = "balance")
-    private Integer balance;
+    private BigDecimal balance;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TranzactiiEntity> tranzactii;
 
     public UserEntity(String nume, String nr_card, String pin) {
         this.nume = nume;
