@@ -3,7 +3,6 @@ package com.backend.li.service;
 import com.backend.li.model.MessageEntity;
 import com.backend.li.repository.MessageRepository;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
