@@ -8,10 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -28,13 +25,15 @@ public class Inregistrare extends JPanel {
 
 
     public Inregistrare() {
-/*
+
         try {
-            backgroundImage = ImageIO.read(getClass().getResource("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\loading_screen.png"));
-        } catch (Exception e) {
+            backgroundImage = ImageIO.read(new File("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\panel.png"));
+        } catch (IOException e) {
             e.printStackTrace();
         }
-*/
+
+        setFocusable(true);
+        requestFocusInWindow();
 
 
         setLayout(new GridBagLayout());
@@ -83,6 +82,9 @@ public class Inregistrare extends JPanel {
         pinLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         registerButton.setBackground(Color.BLUE);
         registerButton.setForeground(Color.WHITE);
+        numeLabel.setForeground(Color.WHITE);
+        nrCardLabel.setForeground(Color.WHITE);
+        pinLabel.setForeground(Color.WHITE);
 
         registerButton.addActionListener(new ActionListener() {
             @Override

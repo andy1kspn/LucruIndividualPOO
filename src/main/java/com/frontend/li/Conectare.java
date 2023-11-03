@@ -33,7 +33,7 @@ public class Conectare extends JPanel {
     private Integer userId;
     public Conectare() {
         try {
-            backgroundImage = ImageIO.read(new File("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\conectare.png"));
+            backgroundImage = ImageIO.read(new File("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\panel.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,6 +46,7 @@ public class Conectare extends JPanel {
         customLabel = new JLabel("Conectare:");
         customLabel.setForeground(Color.white);
         customLabel.setBounds(300, -5, 500, 250);
+        customLabel.setFont(new Font("Arial", Font.BOLD, 15));
         add(customLabel);
 
         numarCardLabel = new JLabel("Numarul cardului:");
@@ -101,7 +102,7 @@ public class Conectare extends JPanel {
 
         errorLabel = new JLabel("");
         errorLabel.setForeground(Color.red);
-        errorLabel.setBounds(200, 350, 300, 30);
+        errorLabel.setBounds(245, 320, 300, 30);
         add(errorLabel);
     }
 

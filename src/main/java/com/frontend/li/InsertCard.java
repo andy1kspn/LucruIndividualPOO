@@ -1,7 +1,6 @@
 package com.frontend.li;
 
 import com.frontend.li.Conectare;
-import com.frontend.li.old.Moldindconbank;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,6 @@ import javax.imageio.ImageIO;
 public class InsertCard extends JPanel {
     private JPanel rectanglePanel;
     private JPanel interactionPanel;
-    private Moldindconbank moldindconbank;
     private BufferedImage[] backgroundImages;
     private int currentImageIndex;
     private Timer animationTimer;

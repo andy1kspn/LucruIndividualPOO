@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -25,6 +26,8 @@ public class Mesaje extends JPanel {
     private List<Integer> messagesToBeDeleted = new ArrayList<>();
 
     public Mesaje(Integer userId) {
+        setLayout(new BorderLayout());
+
         deleteAllButton = new JButton("Delete All");
         messageTextArea = new JTextArea(20, 40);
 
@@ -41,9 +44,15 @@ public class Mesaje extends JPanel {
             openBancaPersonala();
         });
 
-        add(deleteAllButton);
-        add(backButton);
-        add(new JScrollPane(messageTextArea));
+        styleButton(deleteAllButton);
+        styleButton(backButton);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(deleteAllButton);
+        buttonPanel.add(backButton);
+
+        add(buttonPanel, BorderLayout.NORTH);
+        add(new JScrollPane(messageTextArea), BorderLayout.CENTER);
 
         fetchAndDisplayMessages(userId);
     }
@@ -85,8 +94,9 @@ public class Mesaje extends JPanel {
             }
         }
     }
+
     private void sendDeleteRequest(Integer userId) {
-        for (int i=0;i<messagesToBeDeleted.size();i++) {
+        for (int i = 0; i < messagesToBeDeleted.size(); i++) {
             try {
                 URL url = new URL("http://localhost:8080/api/messages/" + messagesToBeDeleted.get(i));
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -132,5 +142,11 @@ public class Mesaje extends JPanel {
         BancaPersonala.showNewPanel(userNume, userId);
     }
 
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(51, 153, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
+    }
 }
-

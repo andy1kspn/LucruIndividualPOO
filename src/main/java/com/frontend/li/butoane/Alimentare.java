@@ -2,14 +2,12 @@ package com.frontend.li.butoane;
 
 import com.frontend.li.BancaPersonala;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -17,13 +15,12 @@ import java.time.format.DateTimeFormatter;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-
 public class Alimentare extends JPanel {
     public static Integer userId;
     public static String userNume;
     private static int transactionIdCounter = 1;
 
-    public static void showNewPanel(String useNume,Integer useId) {
+    public static void showNewPanel(String useNume, Integer useId) {
         userId = useId;
         userNume = useNume;
         SwingUtilities.invokeLater(() -> {
@@ -38,14 +35,32 @@ public class Alimentare extends JPanel {
     }
 
     public Alimentare() {
+
+        setFocusable(true);
+        requestFocusInWindow();
         setLayout(new BorderLayout());
 
         JTextField sumaField = new JTextField(10);
         JButton alimenteazaButton = new JButton("Alimenteaza");
 
-        JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Suma: "));
-        inputPanel.add(sumaField);
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints labelConstraints = new GridBagConstraints();
+        labelConstraints.insets = new Insets(5, 5, 5, 5);
+        labelConstraints.anchor = GridBagConstraints.WEST;
+
+        GridBagConstraints fieldConstraints = new GridBagConstraints();
+        fieldConstraints.insets = new Insets(5, 5, 5, 5);
+        fieldConstraints.anchor = GridBagConstraints.WEST;
+        fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+        fieldConstraints.weightx = 1.0;
+
+        JLabel sumaLabel = new JLabel("Suma:");
+        sumaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        inputPanel.add(sumaLabel, labelConstraints);
+
+        sumaField.setFont(new Font("Arial", Font.PLAIN, 24));
+        inputPanel.add(sumaField, fieldConstraints);
         inputPanel.add(alimenteazaButton);
 
         add(inputPanel, BorderLayout.CENTER);
@@ -56,13 +71,14 @@ public class Alimentare extends JPanel {
             openBancaPersonala();
         });
 
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(backButton);
+
+        styleButton(alimenteazaButton);
+        styleButton(backButton);
+
+        add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
-        inputPanel.setFont(new Font("Arial", Font.PLAIN, 20));
-        backButton.setFont(new Font("Arial", Font.BOLD, 18));
-
         alimenteazaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,7 +87,7 @@ public class Alimentare extends JPanel {
                     int transactionId = transactionIdCounter++;
                     String apiUrl = "http://localhost:8080/api/users/" + userId;
 
-                    // Send a GET request to fetch user information
+
                     HttpURLConnection userConnection = (HttpURLConnection) new URL(apiUrl).openConnection();
                     userConnection.setRequestMethod("GET");
 
@@ -85,14 +101,11 @@ public class Alimentare extends JPanel {
                         }
                         reader.close();
 
-                        // Create a JSON object based on the user information
                         String userJson = userResponse.toString();
 
-                        // Construct the transaction data
                         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
                         String transactionData = "{\"id\":" + transactionId + ",\"user\":" + userJson + ",\"data\":\"" + currentDateTime + "\",\"tip\":\"deposit\",\"suma\":" + suma + "}";
 
-                        // Send a POST request with the transaction data
                         String postApiUrl = "http://localhost:8080/api/tranzactii";
                         HttpURLConnection transactionConnection = (HttpURLConnection) new URL(postApiUrl).openConnection();
                         transactionConnection.setRequestMethod("POST");
@@ -106,7 +119,6 @@ public class Alimentare extends JPanel {
 
                         int responseCode = transactionConnection.getResponseCode();
                         if (responseCode == HttpURLConnection.HTTP_OK) {
-                            // Handle a successful response here
                             System.out.println("Transaction successful.");
                             showMessageDialog(null, "Alimentare reusita!");
 
@@ -123,12 +135,25 @@ public class Alimentare extends JPanel {
         });
     }
 
+
+
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(51, 153, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
+    }
+
+
     private void closePanel() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         frame.dispose();
     }
 
     private void openBancaPersonala() {
-        BancaPersonala.showNewPanel(userNume, userId); // You need to implement this method in your BancaPersonala class
+        BancaPersonala.showNewPanel(userNume, userId);
     }
+
+
 }

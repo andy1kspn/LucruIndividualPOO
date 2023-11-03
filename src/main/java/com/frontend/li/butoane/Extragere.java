@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-
 public class Extragere extends JPanel {
     public static Integer userId;
     public static String userNume;
@@ -41,12 +40,26 @@ public class Extragere extends JPanel {
         setLayout(new BorderLayout());
 
         JTextField sumaField = new JTextField(10);
-        JButton alimenteazaButton = new JButton("Extrage");
+        JButton extrageButton = new JButton("Extrage");
 
-        JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Suma: "));
-        inputPanel.add(sumaField);
-        inputPanel.add(alimenteazaButton);
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints labelConstraints = new GridBagConstraints();
+        labelConstraints.insets = new Insets(5, 5, 5, 5);
+        labelConstraints.anchor = GridBagConstraints.WEST;
+
+        GridBagConstraints fieldConstraints = new GridBagConstraints();
+        fieldConstraints.insets = new Insets(5, 5, 5, 5);
+        fieldConstraints.anchor = GridBagConstraints.WEST;
+        fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+        fieldConstraints.weightx = 1.0;
+
+        JLabel sumaLabel = new JLabel("Suma:");
+        sumaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        inputPanel.add(sumaLabel, labelConstraints);
+
+        sumaField.setFont(new Font("Arial", Font.PLAIN, 24));
+        inputPanel.add(sumaField, fieldConstraints);
+        inputPanel.add(extrageButton);
 
         add(inputPanel, BorderLayout.CENTER);
 
@@ -56,14 +69,14 @@ public class Extragere extends JPanel {
             openBancaPersonala();
         });
 
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(backButton);
+        styleButton(extrageButton);
+        styleButton(backButton);
+
         add(buttonPanel, BorderLayout.SOUTH);
 
-        inputPanel.setFont(new Font("Arial", Font.PLAIN, 20));
-        backButton.setFont(new Font("Arial", Font.BOLD, 18));
-
-        alimenteazaButton.addActionListener(new ActionListener() {
+        extrageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -104,7 +117,6 @@ public class Extragere extends JPanel {
                         if (responseCode == HttpURLConnection.HTTP_OK) {
                             System.out.println("Transaction successful.");
                             showMessageDialog(null, "Extragere reusita!");
-
                         } else {
                             System.out.println("Failed to make a POST request. HTTP response code: " + responseCode);
                         }
@@ -116,6 +128,14 @@ public class Extragere extends JPanel {
                 }
             }
         });
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(51, 153, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
     }
 
     private void closePanel() {

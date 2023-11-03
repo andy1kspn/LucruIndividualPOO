@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -19,9 +20,10 @@ public class Tranzactii extends JPanel {
     private static String userNume;
 
     public Tranzactii(Integer userId) {
+        setLayout(new BorderLayout());
+
         backButton = new JButton("Back");
         messageTextArea = new JTextArea(20, 40);
-
 
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -31,8 +33,13 @@ public class Tranzactii extends JPanel {
             }
         });
 
-        add(backButton);
-        add(new JScrollPane(messageTextArea));
+        styleButton(backButton);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(backButton);
+
+        add(buttonPanel, BorderLayout.NORTH);
+        add(new JScrollPane(messageTextArea), BorderLayout.CENTER);
 
         fetchAndDisplayMessages(userId);
     }
@@ -84,10 +91,6 @@ public class Tranzactii extends JPanel {
         }
     }
 
-
-
-
-
     public static void showNewPanel(String userNume, Integer userId) {
         final String userNumeFinal = userNume;
         final Integer userIdFinal = userId;
@@ -110,8 +113,14 @@ public class Tranzactii extends JPanel {
     }
 
     private void openBancaPersonala() {
-        BancaPersonala.showNewPanel(userNume, userId); // You need to implement this method in your BancaPersonala class
+        BancaPersonala.showNewPanel(userNume, userId);
     }
 
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(51, 153, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
+    }
 }
-

@@ -1,21 +1,24 @@
 package com.frontend.li.butoane;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frontend.li.BancaPersonala;
+
 public class Balanta extends JPanel {
     public static Integer userId;
     public static String userNume;
     private JLabel numeLabel;
     private JLabel balanceLabel;
 
-    public static void showNewPanel(String userNume,Integer userId) {
+    public static void showNewPanel(String userNume, Integer userId) {
         Balanta.userId = userId;
         Balanta.userNume = userNume;
         SwingUtilities.invokeLater(() -> {
@@ -28,20 +31,36 @@ public class Balanta extends JPanel {
             frame.setResizable(false);
             frame.setVisible(true);
             balance.fetchUserData();
+
         });
     }
 
     public Balanta() {
+
+
+        setFocusable(true);
+        requestFocusInWindow();
         setLayout(new BorderLayout());
 
-        JPanel userDataPanel = new JPanel();
-        userDataPanel.setLayout(new BoxLayout(userDataPanel, BoxLayout.Y_AXIS));
+        JPanel userDataPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 
         numeLabel = new JLabel("Nume: ");
         balanceLabel = new JLabel("Balance: ");
+        numeLabel.setForeground(Color.BLACK);
+        numeLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        balanceLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        balanceLabel.setForeground(Color.BLACK);
 
-        userDataPanel.add(numeLabel);
-        userDataPanel.add(balanceLabel);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        userDataPanel.add(numeLabel, gridBagConstraints);
+
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        userDataPanel.add(balanceLabel, gridBagConstraints);
 
         add(userDataPanel, BorderLayout.CENTER);
 
@@ -52,11 +71,11 @@ public class Balanta extends JPanel {
         });
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(backButton);
+        styleButton(backButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        numeLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        balanceLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         backButton.setFont(new Font("Arial", Font.BOLD, 18));
+        setOpaque(false);
     }
 
     public void fetchUserData() {
@@ -79,7 +98,7 @@ public class Balanta extends JPanel {
                 UserData userData = objectMapper.readValue(response.toString(), UserData.class);
 
                 numeLabel.setText("Nume: " + userData.getNume());
-                balanceLabel.setText("Balance: " + userData.getBalance());
+                balanceLabel.setText("Balanta: " + userData.getBalance());
 
             } else {
                 System.out.println("Failed to retrieve user data. HTTP response code: " + responseCode);
@@ -96,7 +115,6 @@ public class Balanta extends JPanel {
         private String nr_card;
         private double balance;
 
-        // Getter and Setter for "id"
         public int getId() {
             return id;
         }
@@ -105,7 +123,6 @@ public class Balanta extends JPanel {
             this.id = id;
         }
 
-        // Getter and Setter for "nume"
         public String getNume() {
             return nume;
         }
@@ -114,7 +131,6 @@ public class Balanta extends JPanel {
             this.nume = nume;
         }
 
-        // Getter and Setter for "pin"
         public String getPin() {
             return pin;
         }
@@ -123,7 +139,6 @@ public class Balanta extends JPanel {
             this.pin = pin;
         }
 
-        // Getter and Setter for "nr_card"
         public String getNr_card() {
             return nr_card;
         }
@@ -132,7 +147,6 @@ public class Balanta extends JPanel {
             this.nr_card = nr_card;
         }
 
-        // Getter and Setter for "balance"
         public double getBalance() {
             return balance;
         }
@@ -141,6 +155,7 @@ public class Balanta extends JPanel {
             this.balance = balance;
         }
     }
+
     private void closePanel() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         frame.dispose();
@@ -150,4 +165,11 @@ public class Balanta extends JPanel {
         BancaPersonala.showNewPanel(userNume, userId);
     }
 
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(51, 153, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
+    }
 }
