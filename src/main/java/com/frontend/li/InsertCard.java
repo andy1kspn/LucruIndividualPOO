@@ -103,6 +103,7 @@ public class InsertCard extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             InsertCard insertCard = new InsertCard();
             frame.getContentPane().add(insertCard);
+            frame.setResizable(false);
             frame.setSize(417, 485);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);

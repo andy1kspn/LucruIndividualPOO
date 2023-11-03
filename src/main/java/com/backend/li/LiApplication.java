@@ -17,7 +17,6 @@ public class LiApplication {
 
 
 
-
         SpringApplication.run(LiApplication.class, args);
 
     }

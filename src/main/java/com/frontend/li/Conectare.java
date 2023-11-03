@@ -30,7 +30,7 @@ public class Conectare extends JPanel {
     private JLabel inregistrativaLabel;
     private JLabel errorLabel;
     private String userName;
-    private double userBalance;
+    private Integer userId;
     public Conectare() {
         try {
             backgroundImage = ImageIO.read(new File("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\conectare.png"));
@@ -45,7 +45,7 @@ public class Conectare extends JPanel {
 
         customLabel = new JLabel("Conectare:");
         customLabel.setForeground(Color.white);
-        customLabel.setBounds(300, 1, 500, 250);
+        customLabel.setBounds(300, -5, 500, 250);
         add(customLabel);
 
         numarCardLabel = new JLabel("Numarul cardului:");
@@ -67,7 +67,7 @@ public class Conectare extends JPanel {
         add(pinInput);
 
         verifyButton = new JButton("CONECTARE");
-        verifyButton.setBounds(300, 250, 100, 30);
+        verifyButton.setBounds(250, 250, 200, 30);
         verifyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -120,7 +120,7 @@ public class Conectare extends JPanel {
             parentWindow.dispose();
         }
 
-        BancaPersonala.showNewPanel(userName,userBalance);
+        BancaPersonala.showNewPanel(userName,userId);
     }
 
     private boolean verifyCardAndPin(String numarCard, String pin) {
@@ -149,7 +149,7 @@ public class Conectare extends JPanel {
 
                     if (numarCard.equals(validNumarCard) && pin.equals(validPin)) {
                         userName = userData.getString("nume");
-                        userBalance = userData.getDouble("balance");
+                        userId = userData.getInt("id");
                         return true;
                     }
                 }
@@ -175,6 +175,7 @@ public class Conectare extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             Conectare conectare = new Conectare();
             frame.getContentPane().add(conectare);
+            frame.setResizable(false);
             frame.setSize(707, 485);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);

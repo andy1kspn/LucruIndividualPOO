@@ -1,9 +1,15 @@
 package com.frontend.li;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -17,28 +23,61 @@ public class Inregistrare extends JPanel {
     private JLabel pinLabel;
     private JPasswordField pinField;
     private JButton registerButton;
+    private Integer validNumeid;
+    private Image backgroundImage;
+
 
     public Inregistrare() {
-        setLayout(new GridLayout(6, 2));
+/*
+        try {
+            backgroundImage = ImageIO.read(getClass().getResource("C:\\Users\\Spinu Andrei\\Desktop\\Java\\LI\\src\\main\\java\\loading_screen.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
+
+
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.EAST;
 
         numeLabel = new JLabel("Nume:");
-        numeField = new JTextField();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(numeLabel, gbc);
+
         nrCardLabel = new JLabel("Numar Card:");
-        nrCardField = new JTextField();
+        gbc.gridy = 1;
+        add(nrCardLabel, gbc);
+
         pinLabel = new JLabel("PIN:");
-        pinField = new JPasswordField();
+        gbc.gridy = 2;
+        add(pinLabel, gbc);
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        numeField = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        add(numeField, gbc);
+
+        nrCardField = new JTextField(16);
+        gbc.gridy = 1;
+        add(nrCardField, gbc);
+
+        pinField = new JPasswordField(4);
+        gbc.gridy = 2;
+        add(pinField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
         registerButton = new JButton("Inregistreaza");
+        add(registerButton, gbc);
 
-        add(numeLabel);
-        add(numeField);
-        add(nrCardLabel);
-        add(nrCardField);
-        add(pinLabel);
-        add(pinField);
-        add(new JLabel());
-        add(registerButton);
-
-        // Add styling
         numeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         nrCardLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         pinLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -64,6 +103,16 @@ public class Inregistrare extends JPanel {
             }
         });
     }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
+
 
     private boolean postDataToDatabase(String nume, String nrCard, String pin) {
         try {
@@ -75,7 +124,7 @@ public class Inregistrare extends JPanel {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            String jsonInputString = "{\"id\": 2, \"nume\": \"" + nume + "\", \"nr_card\": \"" + nrCard + "\", \"pin\": \"" + pin + "\", \"balance\": 0}";
+            String jsonInputString = "{\"nume\": \"" + nume + "\", \"nr_card\": \"" + nrCard + "\", \"pin\": \"" + pin + "\", \"balance\": 0}";
 
             OutputStream os = connection.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -84,11 +133,86 @@ public class Inregistrare extends JPanel {
             osw.close();
 
             int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                int userId = getUserIdFromResponse(connection);
+                postWelcomeMessages(userId, nume);
+                cautaId(nume);
+            }
+
             return responseCode == HttpURLConnection.HTTP_OK;
 
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private int getUserIdFromResponse(HttpURLConnection connection) {
+        try {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                try {
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    return jsonResponse.getInt("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    System.err.println("Invalid JSON response: " + response.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+
+    private void postWelcomeMessages(int userId, String nume) {
+        try {
+            if (cautaId(nume)) {
+                String welcomeMessage = "{\"id_utilizator\": " + validNumeid + ", \"mesaj\": \"Bine ati venit la MICB - " + nume + "\"}";
+                String message2 = "{\"id_utilizator\": " + validNumeid + ", \"mesaj\": \"lalalalalalalaaaaaaaaaaaa\"}";
+                String message3 = "{\"id_utilizator\": " + validNumeid + ", \"mesaj\": \"Spaaaaaaaaaam!\"}";
+
+                postMessageToDatabase(welcomeMessage);
+                postMessageToDatabase(message2);
+                postMessageToDatabase(message3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void postMessageToDatabase(String message) {
+        try {
+            String messageApiUrl = "http://localhost:8080/api/messages";
+
+            URL messageUrl = new URL(messageApiUrl);
+            HttpURLConnection messageConnection = (HttpURLConnection) messageUrl.openConnection();
+            messageConnection.setRequestMethod("POST");
+            messageConnection.setRequestProperty("Content-Type", "application/json");
+            messageConnection.setDoOutput(true);
+
+            OutputStream os = messageConnection.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            osw.write(message);
+            osw.flush();
+            osw.close();
+
+            int responseCode = messageConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,13 +223,11 @@ public class Inregistrare extends JPanel {
     }
 
     private void closePanelAndOpenConectare() {
-        // Close the current panel
         Window parentWindow = SwingUtilities.windowForComponent(this);
         if (parentWindow != null) {
             parentWindow.dispose();
         }
 
-        // Open the Conectare panel
         Conectare.showNewPanel();
     }
 
@@ -115,9 +237,50 @@ public class Inregistrare extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             Inregistrare inregistrare = new Inregistrare();
             frame.getContentPane().add(inregistrare);
-            frame.setSize(300, 200);
+            frame.setResizable(false);
+            frame.setSize(600, 400);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
     }
+
+
+
+
+    private boolean cautaId(String nume) {
+        for (int i = 1; i <= 100; i++) {
+            try {
+                String apiUrl = "http://localhost:8080/api/users/" + i;
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
+                connection.setRequestMethod("GET");
+
+                int responseCode = connection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    JSONObject userData = new JSONObject(response.toString());
+
+                    String validNume = userData.getString("nume");
+
+                    if (validNume.equals(nume)) {
+                        validNumeid = userData.getInt("id");
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
+    }
+
 }

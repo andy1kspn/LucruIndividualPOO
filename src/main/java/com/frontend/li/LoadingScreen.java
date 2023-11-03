@@ -19,7 +19,7 @@ public class LoadingScreen extends JFrame {
 
         panel = new CustomPanel();
 
-        progressBar = new JProgressBar(0, 1);
+        progressBar = new JProgressBar(0, 1);   //Din 1 in 15!
         progressBar.setStringPainted(true);
 
         add(panel);
@@ -30,7 +30,7 @@ public class LoadingScreen extends JFrame {
         SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
             @Override
             protected Void doInBackground() throws Exception {
-                for (int i = 0; i <= 1; i++) {  //din 1 in 10 inapoi!
+                for (int i = 0; i <= 1; i++) {  //din 1 in 15 inapoi!
                     Thread.sleep(1000);
                     publish(i);
                 }
